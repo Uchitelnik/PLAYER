@@ -1,3 +1,6 @@
+import random
+
+
 class PLAYER:
     def __init__(self, name, origen):
         self.name = name
@@ -9,7 +12,6 @@ class PLAYER:
         self.strong = 0
         self.dex = 0
         self.atack_speed = 0
-        self.thorns = 0
         self.armor = 0
 
 
@@ -24,7 +26,6 @@ class PLAYER:
             self.brain = 80 #max = 100
             self.size = 170 #max = 170
             self.armor = 150 #max 200
-            self.thorns = 0 #max 10
 
         if self.origen == "vampire":
             self.health = 200 #max = 200
@@ -35,7 +36,6 @@ class PLAYER:
             self.brain = 100 #max = 100
             self.size = 160 #max = 170
             self.armor = 0 #max 200
-            self.thorns = 10 #max 10
 
         if self.origen == "elf":
             self.health = 50 #max = 200
@@ -46,7 +46,6 @@ class PLAYER:
             self.brain = 30 #max = 100
             self.size = 10 #max = 170
             self.armor = 120 #max 200
-            self.thorns = 0 #max 10
 
         if self.origen == "robot":
             self.health = 200 #max = 200
@@ -57,7 +56,6 @@ class PLAYER:
             self.brain = 100 #max = 100
             self.size = 170 #max = 170
             self.armor = 200 #max 200
-            self.thorns = 0 #max 10
 
         if self.origen == "firekill":
             self.health = 30 #max = 200
@@ -68,7 +66,6 @@ class PLAYER:
             self.brain = 30 #max = 100
             self.size = 30 #max = 170
             self.armor = 30 #max 200
-            self.thorns = 30 #max 10
 
     def visible_origen(self):
         print(f"health - {self.health} \n"
@@ -96,7 +93,47 @@ class Enemy:
 
 
 def Attack(player , enemy):
+    max_hp = player.health
     print(F"Вы встретили {enemy.name} , у него такое хп {enemy.health}")
      while player.health > 0 and enemy.health > 0:
-         print(f"Нажмите 1 ,чтобы начать битву , нажмите 2 чтобы ее избежать ")
-         choice1 = input("Введите дейстие :)  :(  ")
+        print(f"Нажмите 1 ,чтобы начать битву , нажмите 2 чтобы ее избежать ")
+        choice1 = input("Введите дейстие :)  :(  " )
+        if choice1 == "1":
+            attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+            if attack == "1" :
+                 player.health -= 10
+                 enemy.health -= 15
+            elif attack == "2":
+                if player.dex > 180:
+                    player.health += 10
+                    if max_hp <= player.health:
+                        print("У вас максимум хп! =+=")         # ЕСЛИ У ENEMY БОЛЬШЕ ЛОВКОСТИ PLAYER.HEALTH НЕ БУДЕТ ДОБАВЛЯТСЯ
+                        player.health = max_hp
+                    elif max_hp > player.health:
+                        PLAYER.health += 10
+                    if player.health > 200
+                elif player.dex > 100:
+                    player.health += 2.5
+                elif player.dex > 50
+                elif player.dex > 130:
+                    player.health += 5
+                else:
+                    player.health += 0
+                    enemy.health -= 0
+
+            else:
+                print("Ошибка , введите 1 или 2")
+        elif choice1 == "2":
+            if enemy.speed > player.speed:
+                print("Вам не удалось сбежать xD")
+                attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+                if attack == "1" :
+                    player.health -= 10
+                    enemy.health -= 15
+                elif attack == "2":
+                    player.health += 5
+                    enemy.health -= 0
+            else:
+                print("Вам удалось сбежать!")
+
+
