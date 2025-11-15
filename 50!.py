@@ -9,6 +9,8 @@ class PLAYER:
         self.brain = 0 #больше способностей и урона
         self.health = 0 #хп
         self.strong = 0 #сила удара
+        self.inv = []
+        self.gold = 50
 
 
     def choice_origen(self, origen):
@@ -180,4 +182,30 @@ def Attack(player , enemy):
         else:
             print("Ошибка , введите 1 или 2 ")
 
+
+
+class Villager:
+    def __init__(self):
+        self.items = [
+            {"name": "Малое зелье здоровья", "price": 20, "type": "heal", "value": 30,
+             "description": "Восстанавливает 30 HP"},
+            {"name": "Большое зелье здоровья", "price": 50, "type": "heal", "value": 70,
+             "description": "Восстанавливает 70 HP"},
+            {"name": "Эликсир силы", "price": 40, "type": "buff", "value": 5,
+             "description": "+5 к силе на следующий бой"},
+            {"name": "Зелье ловкости", "price": 35, "type": "buff", "value": 10,
+             "description": "+10 к ловкости на следующий бой"},
+            {"name": "Защитный амулет", "price": 60, "type": "buff", "value": 15,
+             "description": "+15 к максимальному здоровью"},
+        ]
+    def Visual(self):
+        print(f"Список : Вы вашли в лавку торговца!")
+        for i, item in enumerate(self.items , 1):
+            print(f"{i} Имя - {item["name"]} , Цена - {item["price"]} , Описание - {item["description"]}")
+
+    def Buy(self , player , i):
+        if 0 < i <= len(self.items):
+            item = self.items[i]
+            if player.gold >= item["price"]:
+                player.gold -= item["price"]
 
