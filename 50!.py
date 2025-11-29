@@ -6,11 +6,21 @@ class PLAYER:
         self.name = name
         self.origen = origen
         self.speed = 0 #на скорость удара
-        self.brain = 0 #больше способностей и урона
+        self.brain = 0 #больее дешевые цены у торговца
         self.health = 0 #хп
         self.strong = 0 #сила удара
         self.inv = []
         self.gold = 50
+
+
+
+    def inv_show(self , item):
+        if not self.inv == True:
+            print("Ваш инвентарь пустой")
+        else:
+            for i, item in enumerate(self.inv , 1):
+                print(f"{i} Имя - {item["name"]} , Описание - {item["description"]}")
+
 
 
     def choice_origen(self, origen):
@@ -64,7 +74,6 @@ class Enemy:
     def __init__(self, name , speed , brain , health , size , strong , dex , attack_speed):
         self.name = name
         self.speed = speed
-        self.brain = brain
         self.health = health
         self.size = size
         self.strong = strong
@@ -206,6 +215,26 @@ class Villager:
     def Buy(self , player , i):
         if 0 < i <= len(self.items):
             item = self.items[i]
-            if player.gold >= item["price"]:
-                player.gold -= item["price"]
+            if player.brain >= 50:
+                item["price"] / 1.5
+                if player.brain >= 75:
+                    item["price"] / 1.5
+                    if player.gold >= item["price"]:
+                        player.gold -= item["price"]
+                        player.inv.append(item)
+                        print(
+                            f"Вы успешно купили предмет {item["name"]}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
+                    else:
+                        print("У вас не хватает денег!")
+                else:
+                    if player.gold >= item["price"]:
+                        player.gold -= item["price"]
+                        player.inv.append(item)
+                        print(
+                            f"Вы успешно купили предмет {item["name"]}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
+                    else:
+                        print("У вас не хватает денег!")
+
+
+
 
