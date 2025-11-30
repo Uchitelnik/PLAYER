@@ -62,11 +62,10 @@ class PLAYER:
 
     def visible_origen(self):
         print(f"health - {self.health} \n"
-              f" dex - {self.dex} \n"
-              f" strong - {self.strong} \n"
-              f" speed - {self.speed} \n"
-              f" brain - {self.brain} \n"
-              f" size = {self.size} \n")
+              f"dex - {self.dex} \n"
+              f"strong - {self.strong} \n"
+              f"speed - {self.speed} \n"
+              f"brain - {self.brain} \n")
 
 
 
@@ -236,5 +235,40 @@ class Villager:
                         print("У вас не хватает денег!")
 
 
+def Brodilka():
+    print("Добро пожаловать в игру 'NIT'")
+    nick = input("Введите ваш никнейм ")
+    player = PLAYER(nick , "")
+    print("Выберете персонажа!")
+    print("Нажмите '1' для выбора персонажа 'people'")
+    print("Нажмите '2' для выбора персонажа 'vampire'")
+    print("Нажмите '3' для выбора персонажа 'elf'")
+    print("Нажмите '4' для выбора персонажа 'robot'")
+    print("Нажмите '5' для выбора персонажа 'firekill'")
+    ch1 = int(input("Введите число для взятия персонажа "))
+    if ch1 == 1:
+        player.choice_origen("people")
 
+    elif ch1 == 2:
+        player.choice_origen("vampire")
 
+    elif ch1 == 3:
+        player.choice_origen("elf")
+
+    elif ch1 == 4:
+        player.choice_origen("robot")
+
+    elif ch1 == 5:
+        player.choice_origen("firekill")
+
+    else:
+        print("Вы ввели неправильное число , введите число от 1 до 5 включительно!")
+
+    player.visible_origen()
+
+    villager = Villager()
+    vill = True
+
+    #while vill == True and player.health > 0:
+
+Brodilka()
