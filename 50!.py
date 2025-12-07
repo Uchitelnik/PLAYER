@@ -11,7 +11,7 @@ class PLAYER:
         self.strong = 0 #сила удара
         self.inv = []
         self.gold = 50
-
+        self.maxhealth = 0
 
 
     def inv_show(self , item):
@@ -20,6 +20,20 @@ class PLAYER:
         else:
             for i, item in enumerate(self.inv , 1):
                 print(f"{i} Имя - {item["name"]} , Описание - {item["description"]}")
+
+    def use_item(self , numinv):
+        item = self.inv[numinv]
+        if item["type"] == "heal":
+            if self.health == self.maxhealth:
+                print("У вас максимум хп и вы потратили зелье!")
+            elif self.maxhealth - self.health <= item["value"]:
+                self.health = self.maxhealth
+            else:
+                self.health += item["value"]
+
+        elif item["type"] == "buff":
+            #дописать дз
+
 
 
 
@@ -31,6 +45,7 @@ class PLAYER:
             self.strong = 15 #max = 50
             self.speed = 180 #max = 200
             self.brain = 80 #max = 100
+            self.maxhealth = 150
 
         if self.origen == "vampire":
             self.health = 200 #max = 200
@@ -38,6 +53,7 @@ class PLAYER:
             self.strong = 20 #max = 50
             self.speed = 200 #max = 200
             self.brain = 100 #max = 100
+            self.maxhealth = 200
 
         if self.origen == "elf":
             self.health = 50 #max = 200
@@ -45,6 +61,7 @@ class PLAYER:
             self.strong = 50 #max = 50
             self.speed = 100 #max = 200
             self.brain = 30 #max = 100
+            self.maxhealth = 50
 
         if self.origen == "robot":
             self.health = 200 #max = 200
@@ -52,13 +69,15 @@ class PLAYER:
             self.strong = 10 #max = 50
             self.speed = 10 #max = 200
             self.brain = 100 #max = 100
+            self.maxhealth = 200
 
         if self.origen == "firekill":
             self.health = 30 #max = 200
             self.dex = 30 #max = 200
-            self.strong = 30 #max = 50
+            self.strong = 50 #max = 50
             self.speed = 30 #max = 200
             self.brain = 30 #max = 100
+            self.maxhealth = 30
 
     def visible_origen(self):
         print(f"health - {self.health} \n"
@@ -272,3 +291,5 @@ def Brodilka():
     #while vill == True and player.health > 0:
 
 Brodilka()
+
+#при прохождение игры нужно убить 3 босса , может появляться только после 20 исследования и будет прибавляться с каждым исследованием (1,2,3 ... 100)
