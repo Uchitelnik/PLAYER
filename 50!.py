@@ -1,5 +1,5 @@
 import random
-
+import time
 
 class PLAYER:
     def __init__(self, name, origen):
@@ -227,8 +227,36 @@ def Attack(player , enemy):
             print("Ошибка , введите 1 или 2 ")
 
 
-def poisk(player):
-
+def poisk(player , enemy):
+    poisk_list = ["empty" , "enemy" , "chest" , "village" , "hilling"]
+    random_enemy = ["skelet" , "zombie" , "spider" , "enderman"]
+    event = random.choice(poisk_list)
+    print("Исследование Территорие...")
+    time.sleep(2)
+    if event == "empty":
+        print("Вы ничего не нашли , попробуйте еще раз.")
+    elif event == "enemy":
+        randen = random.choice(random_enemy)
+        print(f"Вы встретили {randen} ! Берегитись!")
+        Attack(player , enemy)
+    elif event == "chest":
+        randch = random.randint(10 , 50)
+        player.gold += randch
+        print(f"Вам добавилось , {randch} золота , теперь ваш баланс {player.gold}!")
+    elif event == "village":
+        print("Вы встретили торговца! 'Не отходя от кассы!' ")
+        village1 = Villager()
+        while True:
+            village1.Visual()
+            village2 = int(input("Введите число от 1 до 6 , какой предмет хотите купить!"))
+            if village2 == 6:
+                break
+            village1.Buy(player , village2)
+    elif event == "hilling":
+        print("Вы встретили , лечебное озеро!")
+        hill1 = random.randint(10 , 30)
+        player.health = min(player.max_health, player.health + hill1)
+        print(f"У вас добавилось {hill1} хп , и теперь у вас {player.health} хп")
 
 
 
