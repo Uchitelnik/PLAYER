@@ -12,6 +12,8 @@ class PLAYER:
         self.inv = []
         self.gold = 50
         self.maxhealth = 0
+        self.buff_strong = 0
+        self.buff_dex = 0
 
 
     def inv_show(self , item):
@@ -32,7 +34,18 @@ class PLAYER:
                 self.health += item["value"]
 
         elif item["type"] == "buff":
-            #дописать дз
+            if item in self.inv:
+                if "сил" in item["description"]:
+                    self.strong = self.strong + item["value"]
+                    self.buff_strong = 3
+                    print(f"Вы выпили зелье силы , ваша сила теперь {self.strong}.Длится {self.buff_strong} битвы. ")
+                elif "ловк" in item["description"]:
+                    self.buff_dex = 5
+                    self.dex += item["value"]
+                    print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
+
+
+#с количеством битв
 
 
 
@@ -89,7 +102,7 @@ class PLAYER:
 
 
 class Enemy:
-    def __init__(self, name , speed , brain , health , size , strong , dex , attack_speed):
+    def __init__(self, name , speed , health , size , strong , dex):
         self.name = name
         self.speed = speed
         self.health = health
@@ -101,9 +114,13 @@ def Die_Player (player):
     if player.health == 0:
         print("Вы проиграли эту смертоносную битву ")
         return True
-def Die_Enemy(enemy):
+def Die_Enemy(enemy , player):
     if enemy.health == 0:
         print("Вы выиграли эту смертоносную битву ")
+        if player.buff_dex > 0:
+            player.buff_dex -= 1
+        elif player.buff_strong > 0:
+            player.buff_strong -= 1
         return True
 
 
@@ -210,6 +227,10 @@ def Attack(player , enemy):
             print("Ошибка , введите 1 или 2 ")
 
 
+def poisk(player):
+
+
+
 
 class Villager:
     def __init__(self):
@@ -222,7 +243,7 @@ class Villager:
              "description": "+5 к силе на следующий бой"},
             {"name": "Зелье ловкости", "price": 35, "type": "buff", "value": 10,
              "description": "+10 к ловкости на следующий бой"},
-            {"name": "Защитный амулет", "price": 60, "type": "buff", "value": 15,
+            {"name": "Защитный амулет", "price": 60, "type": "amulet", "value": 15,
              "description": "+15 к максимальному здоровью"},
         ]
     def Visual(self):
