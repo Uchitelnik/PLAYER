@@ -102,13 +102,29 @@ class PLAYER:
 
 
 class Enemy:
-    def __init__(self, name , speed , health , size , strong , dex):
+    def __init__(self, name , speed , health , strong , dex , level):
         self.name = name
         self.speed = speed
         self.health = health
-        self.size = size
         self.strong = strong
         self.dex = dex
+        self.level = level
+enemy = [Enemy("Skeleton" , 50 , 100 , 10 , 10 , 1) ,
+        Enemy("Zombie" , 100 , 70 , 15 , 30 , 2) ,
+        Enemy("Small Zombie" , 200 , 50 , 15 , 70 , 3) ,
+        Enemy("Goblin" , 30 , 200 , 35 , 5 , 4) ,
+        Enemy("Killer" , 200 , 50 , 40 , 100 , 5) ,
+        Enemy("Fire Elemental", 80, 180, 45, 25, 6),
+        Enemy("Ice Mage", 60, 120, 30, 40, 7),
+        Enemy("Earth Golem", 20, 350, 55, 5, 8),
+        Enemy("Storm Rider", 150, 140, 50, 80, 9),
+        Enemy("Dark Knight", 70, 280, 65, 35, 10),
+        Enemy("Vampire Lord", 130, 320, 70, 60, 11),
+        Enemy("Hydra", 40, 450, 75, 20, 12),
+        Enemy("Mind Flayer", 90, 200, 55, 90, 13),
+        Enemy("Dragon Whelp", 110, 380, 85, 50, 14),
+        Enemy("Chaos Lord", 100, 500, 95, 70, 15)]
+
 
 def Die_Player (player):
     if player.health == 0:
@@ -255,7 +271,7 @@ def poisk(player , enemy):
     elif event == "hilling":
         print("Вы встретили , лечебное озеро!")
         hill1 = random.randint(10 , 30)
-        player.health = min(player.max_health, player.health + hill1)
+        player.health = min(player.maxhealth, player.health + hill1)
         print(f"У вас добавилось {hill1} хп , и теперь у вас {player.health} хп")
 
 
@@ -334,8 +350,33 @@ def Brodilka():
 
     player.visible_origen()
 
-    villager = Villager()
-    vill = True
+    cretrik = 0
+    while player.health >= 0:
+        cretrik+=1
+        print("Нажмите '1' , чтобы 'исследовать территорию' .")
+        print("Нажмите '2' , чтобы 'посмотреть инвентарь' .")
+        print("Нажмите '3' , чтобы 'посмотреть характеристики' .")
+        print("Нажмите '4' , чтобы 'выйти из игры!' .")
+        var1 = int(input("Введите число "))
+        if var1 == 1:
+            poisk(player)
+        elif var1 == 2:
+            player.inv_show()
+            if player.inv == True:
+                var2 = input("Хотите использовать? (Yes or No")
+                if var2 == "Yes":
+                    var3 = int(input("Введите номер предмета "))
+                    player.use_item(var3)
+        elif var1 == 3:
+            player.visible_origen()
+        elif var1 == 4:
+            print("Вы закончили игру :(")
+            break
+    if player.health <= 0:
+        print(f"Вы исследовали {cretrik} районов. И умерли")
+
+
+
 
     #while vill == True and player.health > 0:
 
