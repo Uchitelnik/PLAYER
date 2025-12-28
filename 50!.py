@@ -14,6 +14,7 @@ class PLAYER:
         self.maxhealth = 0
         self.buff_strong = 0
         self.buff_dex = 0
+        self.level = 4
 
 
     def inv_show(self , item):
@@ -109,21 +110,30 @@ class Enemy:
         self.strong = strong
         self.dex = dex
         self.level = level
-enemy = [Enemy("Skeleton" , 50 , 100 , 10 , 10 , 1) ,
-        Enemy("Zombie" , 100 , 70 , 15 , 30 , 2) ,
-        Enemy("Small Zombie" , 200 , 50 , 15 , 70 , 3) ,
-        Enemy("Goblin" , 30 , 200 , 35 , 5 , 4) ,
-        Enemy("Killer" , 200 , 50 , 40 , 100 , 5) ,
-        Enemy("Fire Elemental", 80, 180, 45, 25, 6),
-        Enemy("Ice Mage", 60, 120, 30, 40, 7),
-        Enemy("Earth Golem", 20, 350, 55, 5, 8),
-        Enemy("Storm Rider", 150, 140, 50, 80, 9),
-        Enemy("Dark Knight", 70, 280, 65, 35, 10),
-        Enemy("Vampire Lord", 130, 320, 70, 60, 11),
-        Enemy("Hydra", 40, 450, 75, 20, 12),
-        Enemy("Mind Flayer", 90, 200, 55, 90, 13),
-        Enemy("Dragon Whelp", 110, 380, 85, 50, 14),
-        Enemy("Chaos Lord", 100, 500, 95, 70, 15)]
+
+    def poisk_enemy(player_level):
+        enemy = [Enemy("Skeleton" , 50 , 100 , 10 , 10 , 1) ,
+                Enemy("Zombie" , 100 , 70 , 15 , 30 , 2) ,
+                Enemy("Small Zombie" , 200 , 50 , 15 , 70 , 3) ,
+                Enemy("Goblin" , 30 , 200 , 35 , 5 , 4) ,
+                Enemy("Killer" , 200 , 50 , 40 , 100 , 5) ,
+                Enemy("Fire Elemental", 80, 180, 45, 25, 6),
+                Enemy("Ice Mage", 60, 120, 30, 40, 7),
+                Enemy("Earth Golem", 20, 350, 55, 5, 8),
+                Enemy("Storm Rider", 150, 140, 50, 80, 9),
+                Enemy("Dark Knight", 70, 280, 65, 35, 10),
+                Enemy("Vampire Lord", 130, 320, 70, 60, 11),
+                Enemy("Hydra", 40, 450, 75, 20, 12),
+                Enemy("Mind Flayer", 90, 200, 55, 90, 13),
+                Enemy("Dragon Whelp", 110, 380, 85, 50, 14),
+                Enemy("Chaos Lord", 100, 500, 95, 70, 15)]
+        enemy2 = []
+        level_enemy = max(1 , player_level + random.randint(-3 , 3))
+        for enemy1 in enemy:
+            if level_enemy == enemy1.level:
+                enemy2.append(enemy1)
+        return  random.choice(enemy2)
+
 
 
 def Die_Player (player):
@@ -243,18 +253,17 @@ def Attack(player , enemy):
             print("Ошибка , введите 1 или 2 ")
 
 
-def poisk(player , enemy):
+def poisk(player):
     poisk_list = ["empty" , "enemy" , "chest" , "village" , "hilling"]
-    random_enemy = ["skelet" , "zombie" , "spider" , "enderman"]
     event = random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
         print("Вы ничего не нашли , попробуйте еще раз.")
     elif event == "enemy":
-        randen = random.choice(random_enemy)
+        randen = Enemy.poisk_enemy(player.level)
         print(f"Вы встретили {randen} ! Берегитись!")
-        Attack(player , enemy)
+        Attack(player , randen)
     elif event == "chest":
         randch = random.randint(10 , 50)
         player.gold += randch
@@ -383,3 +392,4 @@ def Brodilka():
 Brodilka()
 
 #при прохождение игры нужно убить 3 босса , может появляться только после 20 исследования и будет прибавляться с каждым исследованием (1,2,3 ... 100)
+
