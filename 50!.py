@@ -156,16 +156,16 @@ def Attack(player, enemy):
             if attack == "1":
                 player.health -= enemy.strong
                 enemy.health -= player.strong
+                print(f"Вы нанесли урон врагу '-{player.strong}' у него теперь '{enemy.health}' ")
+                print(f"Вам нанесли урон '-{enemy.strong}' и у вас теперь '{player.health}'")
                 die = Die_Player(player)
                 die1 = Die_Enemy(enemy, player)
-                print(f"У вас отнялось {enemy.strong} и у вас осталось {player.health}")
                 if die:
                     return "Вы слили"
                 elif die1:
                     return "Вы выиграли"
             elif attack == "2":
                 if player.dex >= enemy.dex:
-                    player.health += enemy.strong
                     if player.maxhealth <= player.health:
                         print("У вас максимум хп! =+=")
                         player.health = player.maxhealth
@@ -173,76 +173,89 @@ def Attack(player, enemy):
                         if player.dex > 30:
                             chens1 = random.randint(1, 20)
                             if chens1 == 1:
-                                player.health + 10
-                                print("+10 хп")
-                        elif player.dex > 50:
+                                player.health += 5
+                                print("+5 хп")
+                        if player.dex > 50:
                             chens2 = random.randint(1, 10)
                             if chens2 == 1:
-                                player.health + 10
-                                print("+10 хп")
-                        elif player.dex > 100:
+                                player.health += 5
+                                print("+5 хп")
+                        if player.dex > 100:
                             chens3 = random.randint(1, 5)
                             if chens3 == 1:
-                                player.health + 10
-                                print("+10 хп")
-                        elif player.dex > 150:
+                                player.health += 5
+                                print("+5 хп")
+                        if player.dex > 150:
                             chens4 = random.randint(1, 3)
                             if chens4 == 1:
-                                player.health + 10
-                                print("+10 хп")
-                        elif player.dex == 200:
-                            player.health + 10
-                            print("+10 хп")
+                                player.health += 5
+                                print("+5 хп")
+                        if player.dex == 200:
+                            player.health += 7
+                            print("+7 хп")
                         else:
-                            player.health + 0
+                            player.health += 0
                 else:
                     print("У врага больше ловкости чем у вас!")
+                    player.health -= enemy.strong
+                    print(f"Вам нанесли урон '-{enemy.strong}' и у вас теперь '{player.health}'")
+
 
         elif choice1 == "2":
             if enemy.speed > player.speed:
                 print("Вам не удалось сбежать xD")
-                attack1 = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
-                if attack1 == "1":
+                attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+                if attack == "1":
                     player.health -= enemy.strong
                     enemy.health -= player.strong
-                elif attack1 == "2":
+                    print(f"Вы нанесли урон врагу '-{player.strong}' у него теперь '{enemy.health}' ")
+                    print(f"Вам нанесли урон '-{enemy.strong}' и у вас теперь '{player.health}'")
+                    die = Die_Player(player)
+                    die1 = Die_Enemy(enemy, player)
+                    if die:
+                        return "Вы слили"
+                    elif die1:
+                        return "Вы выиграли"
+                elif attack == "2":
                     if player.dex >= enemy.dex:
-                        if player.maxhealth >= player.health:
+                        if player.maxhealth <= player.health:
                             print("У вас максимум хп! =+=")
                             player.health = player.maxhealth
                         elif player.maxhealth > player.health:
                             if player.dex > 30:
                                 chens1 = random.randint(1, 20)
                                 if chens1 == 1:
-                                    player.health + 10
-                                    print("+10 хп")
-                            elif player.dex > 50:
+                                    player.health += 5
+                                    print("+5 хп")
+                            if player.dex > 50:
                                 chens2 = random.randint(1, 10)
                                 if chens2 == 1:
-                                    player.health + 10
-                                    print("+10 хп")
-                            elif player.dex > 100:
+                                    player.health += 5
+                                    print("+5 хп")
+                            if player.dex > 100:
                                 chens3 = random.randint(1, 5)
                                 if chens3 == 1:
-                                    player.health + 10
-                                    print("+10 хп")
-                            elif player.dex > 150:
+                                    player.health += 5
+                                    print("+5 хп")
+                            if player.dex > 150:
                                 chens4 = random.randint(1, 3)
                                 if chens4 == 1:
-                                    player.health + 10
-                                    print("+10 хп")
-                            elif player.dex == 200:
-                                player.health + 10
-                                print("+10 хп")
+                                    player.health += 5
+                                    print("+5 хп")
+                            if player.dex == 200:
+                                player.health += 7
+                                print("+7 хп")
                             else:
-                                player.health + 0
+                                player.health += 0
                     else:
                         print("У врага больше ловкости чем у вас!")
-                else:
-                    print("Вам удалось сбежать!")
+                        player.health -= enemy.strong
+                        print(f"Вам нанесли урон '-{enemy.strong}' и у вас теперь '{player.health}'")
+            else:
+                print("Вам удалось сбежать!")
 
-    else:
-        print("Ошибка , введите 1 или 2 ")
+        else:
+            print("Ошибка , введите 1 или 2 ")
 
 
 def poisk(player):
