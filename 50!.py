@@ -16,12 +16,24 @@ class PLAYER:
         self.buff_strong = 0
         self.buff_dex = 0
         self.level = 4
+        self.pxp = 0
+        self.range_xp = 100
+    def xp_gave(self , exp):
+        self.pxp += exp
+        print(f"Вы получили {exp} ,у вас теперь {self.pxp}")
+        level_give = 0
+        while self.pxp >= self.range_xp:
+            level_give += 1
+            level_up()
+            self.range_xp -= 100
+        self.level += level_give
+        print(f"Получено {level_give} уровней.")
 
     def inv_show(self):
-        if not self.inv == True:
+        if self.inv == True:
             print("Ваш инвентарь пустой")
         else:
-            for i, item in enumerate(self.inv, 1):
+            for i, item in enumerate(self.inv, 0):
                 print(f"{i} Имя - {item["name"]} , Описание - {item["description"]}")
 
     def use_item(self, numinv):
@@ -49,45 +61,45 @@ class PLAYER:
 
     def choice_origen(self, origen):
         self.origen = origen
-        if self.origen == "people":
-            self.health = 150  # max = 200
-            self.dex = 200  # max = 200
-            self.strong = 15  # max = 50
-            self.speed = 180  # max = 200
-            self.brain = 80  # max = 100
+        if self.origen == "people":  # Сбалансированный
+            self.health = 100
+            self.dex = 50
+            self.strong = 20
+            self.speed = 60
+            self.brain = 70
+            self.maxhealth = 100
+
+        elif self.origen == "vampire":  # Высокое здоровье, средний урон
+            self.health = 150
+            self.dex = 40
+            self.strong = 25
+            self.speed = 50
+            self.brain = 60
             self.maxhealth = 150
 
-        if self.origen == "vampire":
-            self.health = 200  # max = 200
-            self.dex = 200  # max = 200
-            self.strong = 20  # max = 50
-            self.speed = 200  # max = 200
-            self.brain = 100  # max = 100
-            self.maxhealth = 200
+        elif self.origen == "elf":  # Высокий урон, низкое здоровье
+            self.health = 70
+            self.dex = 80
+            self.strong = 30
+            self.speed = 70
+            self.brain = 50
+            self.maxhealth = 70
 
-        if self.origen == "elf":
-            self.health = 50  # max = 200
-            self.dex = 20  # max = 200
-            self.strong = 50  # max = 50
-            self.speed = 100  # max = 200
-            self.brain = 30  # max = 100
-            self.maxhealth = 50
+        elif self.origen == "robot":  # Танк
+            self.health = 180
+            self.dex = 20
+            self.strong = 15
+            self.speed = 30
+            self.brain = 90
+            self.maxhealth = 180
 
-        if self.origen == "robot":
-            self.health = 200  # max = 200
-            self.dex = 10  # max = 200
-            self.strong = 10  # max = 50
-            self.speed = 10  # max = 200
-            self.brain = 100  # max = 100
-            self.maxhealth = 200
-
-        if self.origen == "firekill":
-            self.health = 30  # max = 200
-            self.dex = 30  # max = 200
-            self.strong = 50  # max = 50
-            self.speed = 30  # max = 200
-            self.brain = 30  # max = 100
-            self.maxhealth = 30
+        elif self.origen == "firekill":  # Стек урона
+            self.health = 60
+            self.dex = 60
+            self.strong = 35
+            self.speed = 65
+            self.brain = 40
+            self.maxhealth = 60
 
     def visible_origen(self):
         print(f"health - {self.health} \n"
@@ -98,30 +110,33 @@ class PLAYER:
 
 
 class Enemy:
-    def __init__(self, name, speed, health, strong, dex, level):
+    def __init__(self, name, speed, health, strong, dex, level, exp):
         self.name = name
         self.speed = speed
         self.health = health
         self.strong = strong
         self.dex = dex
         self.level = level
+        self.exp = exp
 
     def poisk_enemy(player_level):
-        enemy = [Enemy("Skeleton", 50, 100, 10, 10, 1),
-                 Enemy("Zombie", 100, 70, 15, 30, 2),
-                 Enemy("Small Zombie", 200, 50, 15, 70, 3),
-                 Enemy("Goblin", 30, 200, 35, 5, 4),
-                 Enemy("Killer", 200, 50, 40, 100, 5),
-                 Enemy("Fire Elemental", 80, 180, 45, 25, 6),
-                 Enemy("Ice Mage", 60, 120, 30, 40, 7),
-                 Enemy("Earth Golem", 20, 350, 55, 5, 8),
-                 Enemy("Storm Rider", 150, 140, 50, 80, 9),
-                 Enemy("Dark Knight", 70, 280, 65, 35, 10),
-                 Enemy("Vampire Lord", 130, 320, 70, 60, 11),
-                 Enemy("Hydra", 40, 450, 75, 20, 12),
-                 Enemy("Mind Flayer", 90, 200, 55, 90, 13),
-                 Enemy("Dragon Whelp", 110, 380, 85, 50, 14),
-                 Enemy("Chaos Lord", 100, 500, 95, 70, 15)]
+        enemy = [
+            Enemy("Скелет", 30, 40, 10, 20, 1 , 100),
+            Enemy("Зомби", 20, 60, 15, 10, 2 , 200),
+            Enemy("Гоблин", 50, 35, 12, 40, 3 , 300),
+            Enemy("Волк", 70, 30, 18, 60, 4 , 400),
+            Enemy("Орк", 40, 80, 25, 25, 5 , 500),
+            Enemy("Огненный элементаль", 60, 70, 30, 35, 6 , 600),
+            Enemy("Ледяной маг", 45, 60, 22, 45, 7 , 700),
+            Enemy("Земляной голем", 25, 120, 35, 15, 8 , 800),
+            Enemy("Всадник бури", 80, 65, 28, 70, 9 , 900),
+            Enemy("Темный рыцарь", 55, 100, 40, 40, 10, 1000),
+            Enemy("Вампир", 75, 90, 35, 65, 11 , 1100),
+            Enemy("Гидра", 35, 150, 45, 30, 12 , 1200),
+            Enemy("Пожиратель разума", 65, 80, 32, 75, 13 , 1300),
+            Enemy("Дракончик", 85, 110, 50, 55, 14 , 1400),
+            Enemy("Повелитель хаоса", 90, 200, 60, 60, 15 , 1500)
+        ]
         enemy2 = []
         level_enemy = max(1, player_level + random.randint(-3, 3))
         for enemy1 in enemy:
@@ -261,8 +276,6 @@ def Attack(player, enemy):
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
     event = random.choice(poisk_list)
-
-    event = "enemy"
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
@@ -377,8 +390,8 @@ def Brodilka():
             poisk(player)
         elif var1 == 2:
             player.inv_show()
-            if player.inv == True:
-                var2 = input("Хотите использовать? (Yes or No")
+            if not player.inv == False:
+                var2 = input("Хотите использовать? _Yes or No_      ")
                 if var2 == "Yes":
                     var3 = int(input("Введите номер предмета "))
                     player.use_item(var3)
