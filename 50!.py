@@ -18,16 +18,56 @@ class PLAYER:
         self.level = 4
         self.pxp = 0
         self.range_xp = 100
+        self.talant = 0
     def xp_gave(self , exp):
         self.pxp += exp
         print(f"Вы получили {exp} ,у вас теперь {self.pxp}")
-        level_give = 0
         while self.pxp >= self.range_xp:
-            level_give += 1
-            level_up()
+            self.talant += 1
+            self.level_up()
             self.range_xp -= 100
-        self.level += level_give
-        print(f"Получено {level_give} уровней.")
+        print(f"Получено {self.talant} уровней.")
+
+    def level_up(self):
+        self.level += 1
+        print("Вы повысили уровень.")
+        print(f"Ваш уровень теперь {self.level}")
+        print(f"У вас теперь {self.talant} очков таланта.")
+        print(f"У вас отсалось {self.range_xp - self.pxp} xp до нового уровня")
+    def player_up(self):
+        if self.talant <= 0:
+            print("У вас не хватает очков таланта")
+            return False
+        else:
+            while self.talant > 0:
+                print(f"У вас {self.talant} очков таланта.")
+                print("Нажмите '1' чтобы прокачать силу.")
+                print("Нажмите '2' чтобы прокачать скорость.")
+                print("Нажмите '3' чтобы прокачать ум.")
+                print("Нажмите '4' чтобы прокачать хп.")
+                print("Нажмите '5' чтобы прокачать ловкость.")
+                print("Нажмите '6' чтобы выйти.")
+                choicen = int(input("Введите число. "))
+                if choicen == 1:
+                    self.strong += 5
+                    continue
+                elif choicen == 2:
+                    self.speed += 5
+                    continue
+                elif choicen == 3:
+                    self.brain += 5
+                    continue
+                elif choicen == 4:
+                    self.maxhealth += 5
+                    continue
+                elif choicen == 5:
+                    self.dex += 5
+                    continue
+                elif choicen == 6:
+                    break
+                else:
+                    print("Не верно.Введите число от 1 до 6.")
+            return True
 
     def inv_show(self):
         if self.inv == True:
@@ -106,7 +146,9 @@ class PLAYER:
               f"dex - {self.dex} \n"
               f"strong - {self.strong} \n"
               f"speed - {self.speed} \n"
-              f"brain - {self.brain} \n")
+              f"brain - {self.brain} \n"
+              f"pxp - {self.pxp} \n"
+              )
 
 
 class Enemy:
@@ -178,6 +220,8 @@ def Attack(player, enemy):
                 if die:
                     return "Вы слили"
                 elif die1:
+                    player.xp_gave(enemy.exp)
+                    player.level_up()
                     return "Вы выиграли"
             elif attack == "2":
                 if player.dex >= enemy.dex:
@@ -230,6 +274,8 @@ def Attack(player, enemy):
                     if die:
                         return "Вы слили"
                     elif die1:
+                        player.xp_gave(enemy.exp)
+                        player.level_up()
                         return "Вы выиграли"
                 elif attack == "2":
                     if player.dex >= enemy.dex:
@@ -384,7 +430,8 @@ def Brodilka():
         print("Нажмите '1' , чтобы 'исследовать территорию' .")
         print("Нажмите '2' , чтобы 'посмотреть инвентарь' .")
         print("Нажмите '3' , чтобы 'посмотреть характеристики' .")
-        print("Нажмите '4' , чтобы 'выйти из игры!' .")
+        print("Нажмите '4' , чтобы 'улучшить характеристики' .")
+        print("Нажмите '5' , чтобы 'выйти из игры!' .")
         var1 = int(input("Введите число "))
         if var1 == 1:
             poisk(player)
@@ -398,6 +445,8 @@ def Brodilka():
         elif var1 == 3:
             player.visible_origen()
         elif var1 == 4:
+            player.player_up()
+        elif var1 == 5:
             print("Вы закончили игру :(")
             break
     if player.health <= 0:
