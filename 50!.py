@@ -15,7 +15,7 @@ class PLAYER:
         self.maxhealth = 0
         self.buff_strong = 0
         self.buff_dex = 0
-        self.level = 4
+        self.level = 1
         self.pxp = 0
         self.range_xp = 100
         self.talant = 0
@@ -25,15 +25,15 @@ class PLAYER:
         while self.pxp >= self.range_xp:
             self.talant += 1
             self.level_up()
-            self.range_xp -= 100
+            self.pxp -= 100
         print(f"Получено {self.talant} уровней.")
+        print(f"У вас отсалось {self.pxp - self.range_xp} xp до нового уровня")
 
     def level_up(self):
         self.level += 1
         print("Вы повысили уровень.")
         print(f"Ваш уровень теперь {self.level}")
         print(f"У вас теперь {self.talant} очков таланта.")
-        print(f"У вас отсалось {self.range_xp - self.pxp} xp до нового уровня")
     def player_up(self):
         if self.talant <= 0:
             print("У вас не хватает очков таланта")
@@ -50,18 +50,23 @@ class PLAYER:
                 choicen = int(input("Введите число. "))
                 if choicen == 1:
                     self.strong += 5
+                    self.talant -= 1
                     continue
                 elif choicen == 2:
                     self.speed += 5
+                    self.talant -= 1
                     continue
                 elif choicen == 3:
                     self.brain += 5
+                    self.talant -= 1
                     continue
                 elif choicen == 4:
                     self.maxhealth += 5
+                    self.talant -= 1
                     continue
                 elif choicen == 5:
                     self.dex += 5
+                    self.talant -= 1
                     continue
                 elif choicen == 6:
                     break
@@ -70,7 +75,7 @@ class PLAYER:
             return True
 
     def inv_show(self):
-        if self.inv == True:
+        if not self.inv:
             print("Ваш инвентарь пустой")
         else:
             for i, item in enumerate(self.inv, 0):
@@ -148,6 +153,7 @@ class PLAYER:
               f"speed - {self.speed} \n"
               f"brain - {self.brain} \n"
               f"pxp - {self.pxp} \n"
+              f"level - {self.level} \n"
               )
 
 
@@ -194,7 +200,7 @@ def Die_Player(player):
 
 
 def Die_Enemy(enemy, player):
-    if enemy.health == 0:
+    if enemy.health <= 0:
         print("Вы выиграли эту смертоносную битву ")
         if player.buff_dex > 0:
             player.buff_dex -= 1
@@ -221,7 +227,6 @@ def Attack(player, enemy):
                     return "Вы слили"
                 elif die1:
                     player.xp_gave(enemy.exp)
-                    player.level_up()
                     return "Вы выиграли"
             elif attack == "2":
                 if player.dex >= enemy.dex:
@@ -275,7 +280,6 @@ def Attack(player, enemy):
                         return "Вы слили"
                     elif die1:
                         player.xp_gave(enemy.exp)
-                        player.level_up()
                         return "Вы выиграли"
                 elif attack == "2":
                     if player.dex >= enemy.dex:
@@ -314,9 +318,12 @@ def Attack(player, enemy):
                         print(f"Вам нанесли урон '-{enemy.strong}' и у вас теперь '{player.health}'")
             else:
                 print("Вам удалось сбежать!")
+                return
+
 
         else:
             print("Ошибка , введите 1 или 2 ")
+            continue
 
 
 def poisk(player):
@@ -437,11 +444,13 @@ def Brodilka():
             poisk(player)
         elif var1 == 2:
             player.inv_show()
-            if not player.inv == False:
+            if player.inv:
                 var2 = input("Хотите использовать? _Yes or No_      ")
                 if var2 == "Yes":
                     var3 = int(input("Введите номер предмета "))
                     player.use_item(var3)
+                else:
+                    continue
         elif var1 == 3:
             player.visible_origen()
         elif var1 == 4:
