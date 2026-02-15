@@ -11,7 +11,7 @@ class PLAYER:
         self.health = 0  # хп
         self.strong = 0  # сила удара
         self.inv = []
-        self.gold = 50
+        self.gold = 10000
         self.maxhealth = 0
         self.buff_strong = 0
         self.buff_dex = 0
@@ -82,6 +82,7 @@ class PLAYER:
                 print(f"{i} Имя - {item["name"]} , Описание - {item["description"]}")
 
     def use_item(self, numinv):
+        print(self.inv)
         item = self.inv[numinv]
         if item["type"] == "heal":
             if self.health == self.maxhealth:
@@ -90,6 +91,7 @@ class PLAYER:
                 self.health = self.maxhealth
             else:
                 self.health += item["value"]
+            self.inv.remove(item)
 
         elif item["type"] == "buff":
             if item in self.inv:
@@ -101,8 +103,9 @@ class PLAYER:
                     self.buff_dex = 5
                     self.dex += item["value"]
                     print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
+                self.inv.remove(item)
 
-    # с количеством битв
+                # с количеством битв
 
     def choice_origen(self, origen):
         self.origen = origen
@@ -115,7 +118,7 @@ class PLAYER:
             self.maxhealth = 100
 
         elif self.origen == "vampire":  # Высокое здоровье, средний урон
-            self.health = 150
+            self.health = 20
             self.dex = 40
             self.strong = 25
             self.speed = 50
@@ -377,7 +380,7 @@ class Villager:
             print(f"{i} Имя - {item["name"]} , Цена - {item["price"]} , Описание - {item["description"]}")
 
     def Buy(self, player, i):
-        if 0 < i <= len(self.items) - 1:
+        if 0 <= i <= len(self.items) - 1:
             item = self.items[i]
             if player.brain >= 50:
                 item["price"] / 1.5
