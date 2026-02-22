@@ -1,5 +1,47 @@
 import random
 import time
+from enum import Enum
+
+class Rarity(Enum):
+    common = "обычный"
+    rare = "редкий"
+    epic = "эпический"
+    legendary = "легендарный"
+    secret = "секретный"
+
+class Item:
+    def __init__(self , name , rarity , item , value , price , description):
+        self.name = name
+        self.rarity = rarity
+        self.item = item
+        self.value = value
+        self.price = price
+        self.description = description
+    def generation_item(self , player_level):
+        item_random = random.randint(1 , 100)
+        if player_level >= 15 and item_random <= 5:
+            rarity = Rarity.secret
+            price_mult = 5
+            value_mult = 5
+        elif player_level >= 10 and item_random <= 10:
+            rarity = Rarity.legendary
+            price_mult = 4
+            value_mult = 4
+        elif player_level >= 5 and item_random <= 25:
+            rarity = Rarity.epic
+            price_mult = 3
+            value_mult = 3
+        elif player_level >= 3 and item_random <= 40:
+            rarity = Rarity.rare
+            price_mult = 2
+            value_mult = 2
+        elif player_level >= 1 and item_random <= 100:
+            rarity = Rarity.common
+            price_mult = 1
+            value_mult = 1
+
+
+
 
 
 class PLAYER:
@@ -158,7 +200,6 @@ class PLAYER:
               f"pxp - {self.pxp} \n"
               f"level - {self.level} \n"
               )
-
 
 class Enemy:
     def __init__(self, name, speed, health, strong, dex, level, exp):
@@ -329,7 +370,8 @@ def Attack(player, enemy):
             continue
 
 def open_chest(player):
-    chest_list = ["gold" , "armor" , "orugie"]
+    chest_list1 = ["gold" , "armor" , "orugie"]
+    chest_list = random.choice(chest_list1)
     if chest_list == "gold":
         randch = random.randint(10, 50)
         player.gold += randch
@@ -381,7 +423,7 @@ def open_chest(player):
 
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
-    event = random.choice(poisk_list)
+    event = "chest" #random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
