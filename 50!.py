@@ -118,7 +118,7 @@ class PLAYER:
             self.maxhealth = 100
 
         elif self.origen == "vampire":  # Высокое здоровье, средний урон
-            self.health = 20
+            self.health = 125
             self.dex = 40
             self.strong = 25
             self.speed = 50
@@ -328,6 +328,56 @@ def Attack(player, enemy):
             print("Ошибка , введите 1 или 2 ")
             continue
 
+def open_chest(player):
+    chest_list = ["gold" , "armor" , "orugie"]
+    if chest_list == "gold":
+        randch = random.randint(10, 50)
+        player.gold += randch
+        print(f"Вам добавилось , {randch} золота , теперь ваш баланс {player.gold}!")
+    elif chest_list == "armor":
+        armor_list = ["diamond" , "iron" , "netherite"]
+        randomchance = random.choice(armor_list)
+        small_armor_list = ["shlem", "nagrudnik", "ponogi", "botinki"]
+        if randomchance == "diamond":
+            randomchoice = random.choice(small_armor_list)
+            if randomchoice == "shlem":
+                print(f"Вы получили {randomchance} shlem")
+            if randomchoice == "nagrudnik":
+                print(f"Вы получили {randomchance} nagrudnik")
+            if randomchoice == "ponogi":
+                print(f"Вы получили {randomchance} ponogi")
+            if randomchoice == "botinki":
+                print(f"Вы получили {randomchance} botinki")
+        elif randomchance == "netherite":
+            randomchoice = random.choice(small_armor_list)
+            if randomchoice == "shlem":
+                print(f"Вы получили {randomchance} shlem")
+            if randomchoice == "nagrudnik":
+                print(f"Вы получили {randomchance} nagrudnik")
+            if randomchoice == "ponogi":
+                print(f"Вы получили {randomchance} ponogi")
+            if randomchoice == "botinki":
+                print(f"Вы получили {randomchance} botinki")
+        elif randomchance == "iron":
+            randomchoice = random.choice(small_armor_list)
+            if randomchoice == "shlem":
+                print(f"Вы получили {randomchance} shlem")
+            if randomchoice == "nagrudnik":
+                print(f"Вы получили {randomchance} nagrudnik")
+            if randomchoice == "ponogi":
+                print(f"Вы получили {randomchance} ponogi")
+            if randomchoice == "botinki":
+                print(f"Вы получили {randomchance} botinki")
+    elif chest_list == "orugie":
+        orugie_list = ["diamond" , "iron" , "netherite"]
+        randomchoice1 = random.choice(orugie_list)
+        if randomchoice1 == "diamond":
+            print(f"Вы получили {randomchoice1} меч!")
+        elif randomchoice1 == "netherite":
+            print(f"Вы получили {randomchoice1} меч!")
+        elif randomchoice1 == "iron":
+            print(f"Вы получили {randomchoice1} меч!")
+
 
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
@@ -340,9 +390,7 @@ def poisk(player):
         randen = Enemy.poisk_enemy(player.level)
         Attack(player, randen)
     elif event == "chest":
-        randch = random.randint(10, 50)
-        player.gold += randch
-        print(f"Вам добавилось , {randch} золота , теперь ваш баланс {player.gold}!")
+        open_chest(player)
     elif event == "village":
         print("Вы встретили торговца! 'Не отходя от кассы!' ")
         village1 = Villager()
