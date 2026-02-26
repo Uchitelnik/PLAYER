@@ -3,11 +3,11 @@ import time
 from enum import Enum
 
 class Rarity(Enum):
-    common = "обычный"
-    rare = "редкий"
-    epic = "эпический"
-    legendary = "легендарный"
-    secret = "секретный"
+    common = "Обычный"
+    rare = "Редкий"
+    epic = "Эпический"
+    legendary = "Легендарный"
+    secret = "Секретный"
 
 class Item:
     def __init__(self , name , rarity , item , value , price , description):
@@ -17,7 +17,7 @@ class Item:
         self.value = value
         self.price = price
         self.description = description
-    def generation_item(self , player_level):
+    def generation_item(self , player_level , type):
         item_random = random.randint(1 , 100)
         if player_level >= 15 and item_random <= 5:
             rarity = Rarity.secret
@@ -40,8 +40,43 @@ class Item:
             price_mult = 1
             value_mult = 1
 
+        value = self.value * value_mult
+        price = self.price * price_mult
+        buff = ["Ловкости" , "Силы"]
+        random_buff = random.choice(buff)
+        if type == "heal":
+            name = "Зелье исцеления"
+            description = f"Восстанавливает {value} здоровья"
+        elif type == "buff":
+            name = f"Зелье {buff}"
+            description = f"Увелечивает {random_buff} на {value}"
+        elif type == "weapon":
+            name = f"{rarity} меч"
+            description = f"Наносит {value} урона"
+        else:
+            name = f"{rarity} броня"
+            description = f"Добавляет {value} хп"
 
 
+        return Item(name , rarity , type , value , price , description)
+
+    def open_chest(self , player):
+        chest_list1 = ["gold", "armor", "orugie"]
+        chest_list = random.choice(chest_list1)
+        if chest_list == "gold":
+            randch = random.randint(10, 50)
+            player.gold += randch
+            print(f"Вам добавилось , {randch} золота , теперь ваш баланс {player.gold}!")
+        elif chest_list == "armor":
+            small_armor_list = ["shlem", "nagrudnik", "ponogi", "botinki"]
+            randomchoice = random.choice(small_armor_list)
+            print(f"Вы получили {randomchoice}")
+
+        elif chest_list == "orugie":
+            orugie_list = ["diamond", "iron", "netherite"]
+            randomchoice1 = random.choice(orugie_list)
+            print(f"Вы получили {randomchoice1} меч!")
+            Item.generation_item(player_level=player.level , type = "weapon")
 
 
 class PLAYER:
@@ -369,61 +404,10 @@ def Attack(player, enemy):
             print("Ошибка , введите 1 или 2 ")
             continue
 
-def open_chest(player):
-    chest_list1 = ["gold" , "armor" , "orugie"]
-    chest_list = random.choice(chest_list1)
-    if chest_list == "gold":
-        randch = random.randint(10, 50)
-        player.gold += randch
-        print(f"Вам добавилось , {randch} золота , теперь ваш баланс {player.gold}!")
-    elif chest_list == "armor":
-        armor_list = ["diamond" , "iron" , "netherite"]
-        randomchance = random.choice(armor_list)
-        small_armor_list = ["shlem", "nagrudnik", "ponogi", "botinki"]
-        if randomchance == "diamond":
-            randomchoice = random.choice(small_armor_list)
-            if randomchoice == "shlem":
-                print(f"Вы получили {randomchance} shlem")
-            if randomchoice == "nagrudnik":
-                print(f"Вы получили {randomchance} nagrudnik")
-            if randomchoice == "ponogi":
-                print(f"Вы получили {randomchance} ponogi")
-            if randomchoice == "botinki":
-                print(f"Вы получили {randomchance} botinki")
-        elif randomchance == "netherite":
-            randomchoice = random.choice(small_armor_list)
-            if randomchoice == "shlem":
-                print(f"Вы получили {randomchance} shlem")
-            if randomchoice == "nagrudnik":
-                print(f"Вы получили {randomchance} nagrudnik")
-            if randomchoice == "ponogi":
-                print(f"Вы получили {randomchance} ponogi")
-            if randomchoice == "botinki":
-                print(f"Вы получили {randomchance} botinki")
-        elif randomchance == "iron":
-            randomchoice = random.choice(small_armor_list)
-            if randomchoice == "shlem":
-                print(f"Вы получили {randomchance} shlem")
-            if randomchoice == "nagrudnik":
-                print(f"Вы получили {randomchance} nagrudnik")
-            if randomchoice == "ponogi":
-                print(f"Вы получили {randomchance} ponogi")
-            if randomchoice == "botinki":
-                print(f"Вы получили {randomchance} botinki")
-    elif chest_list == "orugie":
-        orugie_list = ["diamond" , "iron" , "netherite"]
-        randomchoice1 = random.choice(orugie_list)
-        if randomchoice1 == "diamond":
-            print(f"Вы получили {randomchoice1} меч!")
-        elif randomchoice1 == "netherite":
-            print(f"Вы получили {randomchoice1} меч!")
-        elif randomchoice1 == "iron":
-            print(f"Вы получили {randomchoice1} меч!")
-
 
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
-    event = "chest" #random.choice(poisk_list)
+    event = random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
@@ -555,8 +539,5 @@ def Brodilka():
         print(f"Вы исследовали {cretrik} районов. И умерли")
 
     # while vill == True and player.health > 0:
-
-
 Brodilka()
-
 # при прохождение игры нужно убить 3 босса , может появляться только после 20 исследования и будет прибавляться с каждым исследованием (1,2,3 ... 100)
