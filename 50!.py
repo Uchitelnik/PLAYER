@@ -1,7 +1,7 @@
 import random
 import time
 from enum import Enum
-
+shetovod = 0
 class Rarity(Enum):
     common = "Обычный"
     rare = "Редкий"
@@ -167,7 +167,7 @@ class PLAYER:
                 print()
 
     def use_item(self, numinv):
-        print(self.inv)
+        self.inv_show()
         item = self.inv[numinv]
         if item.item == "heal":
             if self.health == self.maxhealth:
@@ -189,8 +189,13 @@ class PLAYER:
                     self.dex += item.value
                     print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
                 self.inv.remove(item)
+        elif item.item == "weapon":
+            self.strong += item.value
+            print(f"У вас меч {item.rarity} , и добавилось {item.value} , силы")
+        elif item.item == "armor":
+            self.health += item.value
+            print(f"У вас {item.rarity} броня , и да.т вам +{item.value}хп")
 
-                # с количеством битв
 
     def choice_origen(self, origen):
         self.origen = origen
@@ -269,7 +274,7 @@ class Enemy:
             Enemy("Вампир", 75, 90, 35, 65, 11 , 1100),
             Enemy("Гидра", 35, 150, 45, 30, 12 , 1200),
             Enemy("Пожиратель разума", 65, 80, 32, 75, 13 , 1300),
-            Enemy("Дракончик", 85, 110, 50, 55, 14 , 1400),
+            Enemy("Дракон", 85, 110, 50, 55, 14 , 1400),
             Enemy("Повелитель хаоса", 90, 200, 60, 60, 15 , 1500)
         ]
         enemy2 = []
@@ -293,10 +298,14 @@ def Die_Enemy(enemy, player):
             player.buff_dex -= 1
         elif player.buff_strong > 0:
             player.buff_strong -= 1
+        if enemy.name in ["Повелитель хаоса" , "Дракон" , "Пожиратель разума"]:
+            shetovod +=1
         return True
 
 
 def Attack(player, enemy):
+    global shetovod
+
     print(F"Вы встретили {enemy.name} , у него такое хп {enemy.health}")
     print(f"Нажмите 1 ,чтобы начать битву , нажмите 2 чтобы ее избежать ")
     choice1 = input("Введите дейстие :)  :(  ")
@@ -415,7 +424,7 @@ def Attack(player, enemy):
 
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
-    event = "village" #random.choice(poisk_list)
+    event = random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
@@ -445,8 +454,8 @@ class Villager:
     def __init__(self):
         self.items = [
             Item.generation_item("buff"),
-            Item.generation_item("buff"),
-            Item.generation_item("buff"),
+            Item.generation_item("heal"),
+            Item.generation_item("heal"),
             Item.generation_item("buff"),
             Item.generation_item("buff")
         ]
@@ -512,7 +521,7 @@ def Brodilka():
     player.visible_origen()
 
     cretrik = 0
-    while player.health >= 0:
+    while player.health >= 0 or shetovod < 3:
         cretrik += 1
         print("Нажмите '1' , чтобы 'исследовать территорию' .")
         print("Нажмите '2' , чтобы 'посмотреть инвентарь' .")
@@ -540,6 +549,8 @@ def Brodilka():
             break
     if player.health <= 0:
         print(f"Вы исследовали {cretrik} районов. И умерли")
+    elif shetovod == 3:
+        print(f"Вы выиграли игру! Вы прошли {cretrik} районов! И смогли выиграть! Поздравляю!")
 
     # while vill == True and player.health > 0:
 Brodilka()
