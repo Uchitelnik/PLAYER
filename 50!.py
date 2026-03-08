@@ -13,11 +13,16 @@ class Item:
     def __init__(self , name , rarity , item , value , price , description):
         self.name = name
         self.rarity = rarity
-        self.item = item
+        self.item = item   #тип предмета
         self.value = value
         self.price = price
         self.description = description
-    def generation_item(self , player_level , type):
+
+
+    @staticmethod
+    def generation_item(type = "buff" , player_level = 10):
+        value = 10
+        price = 20
         item_random = random.randint(1 , 100)
         if player_level >= 15 and item_random <= 5:
             rarity = Rarity.secret
@@ -40,15 +45,15 @@ class Item:
             price_mult = 1
             value_mult = 1
 
-        value = self.value * value_mult
-        price = self.price * price_mult
+        value = value * value_mult
+        price = price * price_mult
         buff = ["Ловкости" , "Силы"]
         random_buff = random.choice(buff)
         if type == "heal":
             name = "Зелье исцеления"
             description = f"Восстанавливает {value} здоровья"
         elif type == "buff":
-            name = f"Зелье {buff}"
+            name = f"Зелье {random_buff}"
             description = f"Увелечивает {random_buff} на {value}"
         elif type == "weapon":
             name = f"{rarity} меч"
@@ -60,7 +65,8 @@ class Item:
 
         return Item(name , rarity , type , value , price , description)
 
-    def open_chest(self , player):
+    @staticmethod
+    def open_chest(player):
         chest_list1 = ["gold", "armor", "orugie"]
         chest_list = random.choice(chest_list1)
         if chest_list == "gold":
@@ -71,13 +77,11 @@ class Item:
             small_armor_list = ["shlem", "nagrudnik", "ponogi", "botinki"]
             randomchoice = random.choice(small_armor_list)
             print(f"Вы получили {randomchoice}")
+            player.inv.append(Item.generation_item(player_level=player.level , type = "armor"))
 
         elif chest_list == "orugie":
-            orugie_list = ["diamond", "iron", "netherite"]
-            randomchoice1 = random.choice(orugie_list)
-            print(f"Вы получили {randomchoice1} меч!")
-            Item.generation_item(player_level=player.level , type = "weapon")
-
+            print(f"Вы получили меч!")
+            player.inv.append(Item.generation_item(player_level=player.level , type = "weapon"))
 
 class PLAYER:
     def __init__(self, name, origen):
@@ -155,30 +159,34 @@ class PLAYER:
         if not self.inv:
             print("Ваш инвентарь пустой")
         else:
-            for i, item in enumerate(self.inv, 0):
-                print(f"{i} Имя - {item["name"]} , Описание - {item["description"]}")
+            for i, item in enumerate(self.inv):
+                print(f"{i}. \nИмя: {item.name}")
+                print(f" Редкость: {item.rarity}")
+                print(f" Описание: {item.description}")
+                print(f" Цена: {item.price}")
+                print()
 
     def use_item(self, numinv):
         print(self.inv)
         item = self.inv[numinv]
-        if item["type"] == "heal":
+        if item.item == "heal":
             if self.health == self.maxhealth:
                 print("У вас максимум хп и вы потратили зелье!")
-            elif self.maxhealth - self.health <= item["value"]:
+            elif self.maxhealth - self.health <= item.value:
                 self.health = self.maxhealth
             else:
-                self.health += item["value"]
+                self.health += item.value
             self.inv.remove(item)
 
-        elif item["type"] == "buff":
+        elif item.item == "buff":
             if item in self.inv:
-                if "сил" in item["description"]:
-                    self.strong = self.strong + item["value"]
+                if "Сил" in item.description:
+                    self.strong = self.strong + item.value
                     self.buff_strong = 3
                     print(f"Вы выпили зелье силы , ваша сила теперь {self.strong}.Длится {self.buff_strong} битвы. ")
-                elif "ловк" in item["description"]:
+                elif "Ловк" in item.description:
                     self.buff_dex = 5
-                    self.dex += item["value"]
+                    self.dex += item.value
                     print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
                 self.inv.remove(item)
 
@@ -407,7 +415,7 @@ def Attack(player, enemy):
 
 def poisk(player):
     poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
-    event = random.choice(poisk_list)
+    event = "village" #random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
@@ -416,7 +424,7 @@ def poisk(player):
         randen = Enemy.poisk_enemy(player.level)
         Attack(player, randen)
     elif event == "chest":
-        open_chest(player)
+        Item.open_chest(player)
     elif event == "village":
         print("Вы встретили торговца! 'Не отходя от кассы!' ")
         village1 = Villager()
@@ -436,43 +444,38 @@ def poisk(player):
 class Villager:
     def __init__(self):
         self.items = [
-            {"name": "Малое зелье здоровья", "price": 20, "type": "heal", "value": 30,
-             "description": "Восстанавливает 30 HP"},
-            {"name": "Большое зелье здоровья", "price": 50, "type": "heal", "value": 70,
-             "description": "Восстанавливает 70 HP"},
-            {"name": "Эликсир силы", "price": 40, "type": "buff", "value": 5,
-             "description": "+5 к силе на следующий бой"},
-            {"name": "Зелье ловкости", "price": 35, "type": "buff", "value": 10,
-             "description": "+10 к ловкости на следующий бой"},
-            {"name": "Защитный амулет", "price": 60, "type": "amulet", "value": 15,
-             "description": "+15 к максимальному здоровью"},
+            Item.generation_item("buff"),
+            Item.generation_item("buff"),
+            Item.generation_item("buff"),
+            Item.generation_item("buff"),
+            Item.generation_item("buff")
         ]
 
     def Visual(self):
         print(f"Список : Вы вашли в лавку торговца!")
         for i, item in enumerate(self.items, 0):
-            print(f"{i} Имя - {item["name"]} , Цена - {item["price"]} , Описание - {item["description"]}")
+            print(f"{i} Имя - {item.name} , Цена - {item.price} , Описание - {item.description}")
 
     def Buy(self, player, i):
         if 0 <= i <= len(self.items) - 1:
             item = self.items[i]
             if player.brain >= 50:
-                item["price"] / 1.5
+                item.price / 1.5
                 if player.brain >= 75:
-                    item["price"] / 1.5
-                    if player.gold >= item["price"]:
-                        player.gold -= item["price"]
+                    item.price / 1.5
+                    if player.gold >= item.price:
+                        player.gold -= item.price
                         player.inv.append(item)
                         print(
-                            f"Вы успешно купили предмет {item["name"]}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
+                            f"Вы успешно купили предмет {item.name}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
                     else:
                         print("У вас не хватает денег!")
                 else:
-                    if player.gold >= item["price"]:
-                        player.gold -= item["price"]
+                    if player.gold >= item.price:
+                        player.gold -= item.price
                         player.inv.append(item)
                         print(
-                            f"Вы успешно купили предмет {item["name"]}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
+                            f"Вы успешно купили предмет {item.name}, поздравляю с покупкой! У вас осталось {player.gold} золото!")
                     else:
                         print("У вас не хватает денег!")
 
