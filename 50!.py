@@ -1,7 +1,11 @@
 import random
 import time
 from enum import Enum
+from logging import exception
+
 shetovod = 0
+
+
 class Rarity(Enum):
     common = "Обычный"
     rare = "Редкий"
@@ -9,61 +13,64 @@ class Rarity(Enum):
     legendary = "Легендарный"
     secret = "Секретный"
 
+
 class Item:
-    def __init__(self , name , rarity , item , value , price , description):
+    def __init__(self, name, rarity, item, value, price, description):
         self.name = name
         self.rarity = rarity
-        self.item = item   #тип предмета
+        self.item = item  # тип предмета
         self.value = value
         self.price = price
         self.description = description
 
-
     @staticmethod
-    def generation_item(type = "buff" , player_level = 10):
-        value = 10
-        price = 20
-        item_random = random.randint(1 , 100)
-        if player_level >= 15 and item_random <= 5:
-            rarity = Rarity.secret
-            price_mult = 5
-            value_mult = 5
-        elif player_level >= 10 and item_random <= 10:
-            rarity = Rarity.legendary
-            price_mult = 4
-            value_mult = 4
-        elif player_level >= 5 and item_random <= 25:
-            rarity = Rarity.epic
-            price_mult = 3
-            value_mult = 3
-        elif player_level >= 3 and item_random <= 40:
-            rarity = Rarity.rare
-            price_mult = 2
-            value_mult = 2
-        elif player_level >= 1 and item_random <= 100:
-            rarity = Rarity.common
-            price_mult = 1
-            value_mult = 1
+    def generation_item(type="buff", player_level=10):
+        try:
+            value = 10
+            price = 20
+            item_random = random.randint(1, 100)
+            if player_level >= 15 and item_random <= 5:
+                rarity = Rarity.secret
+                price_mult = 5
+                value_mult = 5
+            elif player_level >= 10 and item_random <= 10:
+                rarity = Rarity.legendary
+                price_mult = 4
+                value_mult = 4
+            elif player_level >= 5 and item_random <= 25:
+                rarity = Rarity.epic
+                price_mult = 3
+                value_mult = 3
+            elif player_level >= 3 and item_random <= 40:
+                rarity = Rarity.rare
+                price_mult = 2
+                value_mult = 2
+            elif player_level >= 1 and item_random <= 100:
+                rarity = Rarity.common
+                price_mult = 1
+                value_mult = 1
 
-        value = value * value_mult
-        price = price * price_mult
-        buff = ["Ловкости" , "Силы"]
-        random_buff = random.choice(buff)
-        if type == "heal":
-            name = "Зелье исцеления"
-            description = f"Восстанавливает {value} здоровья"
-        elif type == "buff":
-            name = f"Зелье {random_buff}"
-            description = f"Увелечивает {random_buff} на {value}"
-        elif type == "weapon":
-            name = f"{rarity} меч"
-            description = f"Наносит {value} урона"
-        else:
-            name = f"{rarity} броня"
-            description = f"Добавляет {value} хп"
+            value = value * value_mult
+            price = price * price_mult
+            buff = ["Ловкости", "Силы"]
+            random_buff = random.choice(buff)
+            if type == "heal":
+                name = "Зелье исцеления"
+                description = f"Восстанавливает {value} здоровья"
+            elif type == "buff":
+                name = f"Зелье {random_buff}"
+                description = f"Увелечивает {random_buff} на {value}"
+            elif type == "weapon":
+                name = f"{rarity} меч"
+                description = f"Наносит {value} урона"
+            else:
+                name = f"{rarity} броня"
+                description = f"Добавляет {value} хп"
 
-
-        return Item(name , rarity , type , value , price , description)
+            return Item(name, rarity, type, value, price, description)
+        except Exception as e:
+            print(f"Ошибка генерации предмета {e}")
+            return Item("rur" , Rarity.common , "heal" , 10 , 20 , "Ошибка генерации предмета")
 
     @staticmethod
     def open_chest(player):
@@ -77,11 +84,12 @@ class Item:
             small_armor_list = ["shlem", "nagrudnik", "ponogi", "botinki"]
             randomchoice = random.choice(small_armor_list)
             print(f"Вы получили {randomchoice}")
-            player.inv.append(Item.generation_item(player_level=player.level , type = "armor"))
+            player.inv.append(Item.generation_item(player_level=player.level, type="armor"))
 
         elif chest_list == "orugie":
             print(f"Вы получили меч!")
-            player.inv.append(Item.generation_item(player_level=player.level , type = "weapon"))
+            player.inv.append(Item.generation_item(player_level=player.level, type="weapon"))
+
 
 class PLAYER:
     def __init__(self, name, origen):
@@ -92,6 +100,7 @@ class PLAYER:
         self.health = 0  # хп
         self.strong = 0  # сила удара
         self.inv = []
+        self.dex = 0
         self.gold = 10000
         self.maxhealth = 0
         self.buff_strong = 0
@@ -100,144 +109,173 @@ class PLAYER:
         self.pxp = 0
         self.range_xp = 100
         self.talant = 0
-    def xp_gave(self , exp):
-        self.pxp += exp
-        print(f"Вы получили {exp} ,у вас теперь {self.pxp}")
-        while self.pxp >= self.range_xp:
-            self.talant += 1
-            self.level_up()
-            self.pxp -= 100
-        print(f"Получено {self.talant} уровней.")
-        print(f"У вас отсалось {self.pxp - self.range_xp} xp до нового уровня")
+
+    def xp_gave(self, exp):
+        try:
+            self.pxp += exp
+            print(f"Вы получили {exp} ,у вас теперь {self.pxp}")
+            while self.pxp >= self.range_xp:
+                self.talant += 1
+                self.level_up()
+                self.pxp -= 100
+            print(f"Получено {self.talant} уровней.")
+            print(f"У вас отсалось {self.pxp - self.range_xp} xp до нового уровня")
+        except ValueError as e:
+            print(f"Ошибка {e}")
 
     def level_up(self):
         self.level += 1
         print("Вы повысили уровень.")
         print(f"Ваш уровень теперь {self.level}")
         print(f"У вас теперь {self.talant} очков таланта.")
+
     def player_up(self):
-        if self.talant <= 0:
-            print("У вас не хватает очков таланта")
+        try:
+            if self.talant <= 0:
+                print("У вас не хватает очков таланта")
+                return False
+            else:
+                while self.talant > 0:
+                    print(f"У вас {self.talant} очков таланта.")
+                    print("Нажмите '1' чтобы прокачать силу.")
+                    print("Нажмите '2' чтобы прокачать скорость.")
+                    print("Нажмите '3' чтобы прокачать ум.")
+                    print("Нажмите '4' чтобы прокачать хп.")
+                    print("Нажмите '5' чтобы прокачать ловкость.")
+                    print("Нажмите '6' чтобы выйти.")
+                    try:
+                        choicen = int(input("Введите число. "))
+                    except ValueError:
+                        print("Ошибка введите число")
+                        continue
+                    if choicen == 1:
+                        self.strong += 5
+                        self.talant -= 1
+                        continue
+                    elif choicen == 2:
+                        self.speed += 5
+                        self.talant -= 1
+                        continue
+                    elif choicen == 3:
+                        self.brain += 5
+                        self.talant -= 1
+                        continue
+                    elif choicen == 4:
+                        self.maxhealth += 5
+                        self.talant -= 1
+                        continue
+                    elif choicen == 5:
+                        self.dex += 5
+                        self.talant -= 1
+                        continue
+                    elif choicen == 6:
+                        break
+                    else:
+                        print("Не верно.Введите число от 1 до 6.")
+                return True
+        except Exception as e:
+            print(f"Неожиданная ошибка при прокачке {e}")
             return False
-        else:
-            while self.talant > 0:
-                print(f"У вас {self.talant} очков таланта.")
-                print("Нажмите '1' чтобы прокачать силу.")
-                print("Нажмите '2' чтобы прокачать скорость.")
-                print("Нажмите '3' чтобы прокачать ум.")
-                print("Нажмите '4' чтобы прокачать хп.")
-                print("Нажмите '5' чтобы прокачать ловкость.")
-                print("Нажмите '6' чтобы выйти.")
-                choicen = int(input("Введите число. "))
-                if choicen == 1:
-                    self.strong += 5
-                    self.talant -= 1
-                    continue
-                elif choicen == 2:
-                    self.speed += 5
-                    self.talant -= 1
-                    continue
-                elif choicen == 3:
-                    self.brain += 5
-                    self.talant -= 1
-                    continue
-                elif choicen == 4:
-                    self.maxhealth += 5
-                    self.talant -= 1
-                    continue
-                elif choicen == 5:
-                    self.dex += 5
-                    self.talant -= 1
-                    continue
-                elif choicen == 6:
-                    break
-                else:
-                    print("Не верно.Введите число от 1 до 6.")
-            return True
 
     def inv_show(self):
-        if not self.inv:
-            print("Ваш инвентарь пустой")
-        else:
-            for i, item in enumerate(self.inv):
-                print(f"{i}. \nИмя: {item.name}")
-                print(f" Редкость: {item.rarity}")
-                print(f" Описание: {item.description}")
-                print(f" Цена: {item.price}")
-                print()
+        try:
+            if not self.inv:
+                print("Ваш инвентарь пустой")
+            else:
+                for i, item in enumerate(self.inv):
+                    print(f"{i}. \nИмя: {item.name}")
+                    print(f" Редкость: {item.rarity}")
+                    print(f" Описание: {item.description}")
+                    print(f" Цена: {item.price}")
+                    print()
+        except AttributeError as e:
+            print(f"Ошибка прдмет в инвенторе имеет непраивльный формат {e}")
+        except Exception as e:
+            print(f"Ошибка при показе инвенторя {e}")
 
     def use_item(self, numinv):
-        self.inv_show()
-        item = self.inv[numinv]
-        if item.item == "heal":
-            if self.health == self.maxhealth:
-                print("У вас максимум хп и вы потратили зелье!")
-            elif self.maxhealth - self.health <= item.value:
-                self.health = self.maxhealth
-            else:
-                self.health += item.value
-            self.inv.remove(item)
-
-        elif item.item == "buff":
-            if item in self.inv:
-                if "Сил" in item.description:
-                    self.strong = self.strong + item.value
-                    self.buff_strong = 3
-                    print(f"Вы выпили зелье силы , ваша сила теперь {self.strong}.Длится {self.buff_strong} битвы. ")
-                elif "Ловк" in item.description:
-                    self.buff_dex = 5
-                    self.dex += item.value
-                    print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
+        try:
+            self.inv_show()
+            item = self.inv[numinv]
+            if item.item == "heal":
+                if self.health == self.maxhealth:
+                    print("У вас максимум хп и вы потратили зелье!")
+                elif self.maxhealth - self.health <= item.value:
+                    self.health = self.maxhealth
+                else:
+                    self.health += item.value
                 self.inv.remove(item)
-        elif item.item == "weapon":
-            self.strong += item.value
-            print(f"У вас меч {item.rarity} , и добавилось {item.value} , силы")
-        elif item.item == "armor":
-            self.health += item.value
-            print(f"У вас {item.rarity} броня , и да.т вам +{item.value}хп")
 
+            elif item.item == "buff":
+                if item in self.inv:
+                    if "Сил" in item.description:
+                        self.strong = self.strong + item.value
+                        self.buff_strong = 3
+                        print(f"Вы выпили зелье силы , ваша сила теперь {self.strong}.Длится {self.buff_strong} битвы. ")
+                    elif "Ловк" in item.description:
+                        self.buff_dex = 5
+                        self.dex += item.value
+                        print(f"Вы выпили зелье ловкости , ваша ловкость теперь {self.dex}.{self.buff_strong} ")
+                    self.inv.remove(item)
+            elif item.item == "weapon":
+                self.strong += item.value
+                print(f"У вас меч {item.rarity} , и добавилось {item.value} , силы")
+            elif item.item == "armor":
+                self.health += item.value
+                print(f"У вас {item.rarity} броня , и да.т вам +{item.value}хп")
+        except IndexError as e:
+            print(f"Ошибка {e}")
+        except Exception as e:
+            print(f"Неожиданная ошибка {e}")
+        except AttributeError as e:
+            print(f"Ошибка в формате {e}")
 
     def choice_origen(self, origen):
-        self.origen = origen
-        if self.origen == "people":  # Сбалансированный
-            self.health = 100
-            self.dex = 50
-            self.strong = 20
-            self.speed = 60
-            self.brain = 70
-            self.maxhealth = 100
+        try:
+            self.origen = origen
+            if self.origen == "people":  # Сбалансированный
+                self.health = 100
+                self.dex = 50
+                self.strong = 20
+                self.speed = 60
+                self.brain = 70
+                self.maxhealth = 100
 
-        elif self.origen == "vampire":  # Высокое здоровье, средний урон
-            self.health = 125
-            self.dex = 40
-            self.strong = 25
-            self.speed = 50
-            self.brain = 60
-            self.maxhealth = 150
+            elif self.origen == "vampire":  # Высокое здоровье, средний урон
+                self.health = 125
+                self.dex = 40
+                self.strong = 25
+                self.speed = 50
+                self.brain = 60
+                self.maxhealth = 150
 
-        elif self.origen == "elf":  # Высокий урон, низкое здоровье
-            self.health = 70
-            self.dex = 80
-            self.strong = 30
-            self.speed = 70
-            self.brain = 50
-            self.maxhealth = 70
+            elif self.origen == "elf":  # Высокий урон, низкое здоровье
+                self.health = 70
+                self.dex = 80
+                self.strong = 30
+                self.speed = 70
+                self.brain = 50
+                self.maxhealth = 70
 
-        elif self.origen == "robot":  # Танк
-            self.health = 180
-            self.dex = 20
-            self.strong = 15
-            self.speed = 30
-            self.brain = 90
-            self.maxhealth = 180
+            elif self.origen == "robot":  # Танк
+                self.health = 180
+                self.dex = 20
+                self.strong = 15
+                self.speed = 30
+                self.brain = 90
+                self.maxhealth = 180
 
-        elif self.origen == "firekill":  # Стек урона
-            self.health = 60
-            self.dex = 60
-            self.strong = 35
-            self.speed = 65
-            self.brain = 40
-            self.maxhealth = 60
+            elif self.origen == "firekill":  # Стек урона
+                self.health = 60
+                self.dex = 60
+                self.strong = 35
+                self.speed = 65
+                self.brain = 40
+                self.maxhealth = 60
+        except ValueError as e:
+            print(f"Ошибка {e}")
+        except Exception as e:
+            print(f"Неожиданная ошибка {e}")
 
     def visible_origen(self):
         print(f"health - {self.health} \n"
@@ -259,7 +297,7 @@ class Enemy:
         self.level = level
         self.exp = exp
 
-    def poisk_enemy(player_level):
+    def poisk_enemy(self, player_level):
         enemy = [
             Enemy("Скелет", 35, 50, 15, 25, 1, 150),
             Enemy("Зомби", 20, 80, 20, 10, 2, 250),
@@ -273,8 +311,8 @@ class Enemy:
             Enemy("Темный рыцарь", 60, 140, 55, 50, 10, 1300),
             Enemy("Вампир-лорд", 85, 130, 50, 80, 11, 1500),
             Enemy("Гидра", 40, 250, 60, 35, 12, 1800),
-            Enemy("Пожиратель разума", 75, 200, 55, 90, 13, 2500),
-            Enemy("Дракон", 95, 300, 80, 70, 14, 3500),
+            Enemy("Пожиратель разума", 75, 250, 55, 90, 13, 2500),
+            Enemy("Дракон", 95, 350, 80, 70, 14, 3500),
             Enemy("Повелитель хаоса", 300, 400, 105, 140, 15, 4000)
         ]
         enemy2 = []
@@ -292,14 +330,15 @@ def Die_Player(player):
 
 
 def Die_Enemy(enemy, player):
+    global shetovod
     if enemy.health <= 0:
         print("Вы выиграли эту смертоносную битву ")
         if player.buff_dex > 0:
             player.buff_dex -= 1
         elif player.buff_strong > 0:
             player.buff_strong -= 1
-        if enemy.name in ["Повелитель хаоса" , "Дракон" , "Пожиратель разума"]:
-            shetovod +=1
+        if enemy.name in ["Повелитель хаоса", "Дракон", "Пожиратель разума"]:
+            shetovod += 1
         return True
 
 
@@ -469,9 +508,9 @@ class Villager:
         if 0 <= i <= len(self.items) - 1:
             item = self.items[i]
             if player.brain >= 50:
-                item.price / 1.5
+                item.price = item.price / 1.5
                 if player.brain >= 75:
-                    item.price / 1.5
+                    item.price = item.price / 1.5
                     if player.gold >= item.price:
                         player.gold -= item.price
                         player.inv.append(item)
