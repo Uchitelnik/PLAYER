@@ -220,9 +220,11 @@ class PLAYER:
             elif item.item == "weapon":
                 self.strong += item.value
                 print(f"У вас меч {item.rarity} , и добавилось {item.value} , силы")
+                self.inv.remove(item)
             elif item.item == "armor":
                 self.health += item.value
-                print(f"У вас {item.rarity} броня , и да.т вам +{item.value}хп")
+                print(f"У вас {item.rarity} броня , и дает вам +{item.value}хп")
+                self.inv.remove(item)
         except IndexError as e:
             print(f"Ошибка {e}")
         except Exception as e:
@@ -239,6 +241,7 @@ class PLAYER:
                 self.strong = 20
                 self.speed = 60
                 self.brain = 70
+
                 self.maxhealth = 100
 
             elif self.origen == "vampire":  # Высокое здоровье, средний урон
@@ -247,7 +250,7 @@ class PLAYER:
                 self.strong = 25
                 self.speed = 50
                 self.brain = 60
-                self.maxhealth = 150
+                self.maxhealth = 125
 
             elif self.origen == "elf":  # Высокий урон, низкое здоровье
                 self.health = 70
@@ -297,60 +300,75 @@ class Enemy:
         self.level = level
         self.exp = exp
 
-    def poisk_enemy(self, player_level):
-        enemy = [
-            Enemy("Скелет", 35, 50, 15, 25, 1, 150),
-            Enemy("Зомби", 20, 80, 20, 10, 2, 250),
-            Enemy("Гоблин", 60, 45, 18, 50, 3, 350),
-            Enemy("Волк", 80, 40, 25, 70, 4, 450),
-            Enemy("Орк", 45, 100, 35, 30, 5, 600),
-            Enemy("Огненный элементаль", 70, 90, 40, 45, 6, 750),
-            Enemy("Ледяной маг", 50, 80, 35, 60, 7, 850),
-            Enemy("Земляной голем", 30, 180, 45, 20, 8, 1000),
-            Enemy("Всадник бури", 90, 85, 38, 85, 9, 1100),
-            Enemy("Темный рыцарь", 60, 140, 55, 50, 10, 1300),
-            Enemy("Вампир-лорд", 85, 130, 50, 80, 11, 1500),
-            Enemy("Гидра", 40, 250, 60, 35, 12, 1800),
-            Enemy("Пожиратель разума", 75, 250, 55, 90, 13, 2500),
-            Enemy("Дракон", 95, 350, 80, 70, 14, 3500),
-            Enemy("Повелитель хаоса", 300, 400, 105, 140, 15, 4000)
-        ]
-        enemy2 = []
-        level_enemy = max(1, player_level + random.randint(-3, 3))
-        for enemy1 in enemy:
-            if level_enemy == enemy1.level:
-                enemy2.append(enemy1)
-        return random.choice(enemy2)
+    @staticmethod
+    def poisk_enemy(player_level):
+        try:
+            enemy = [
+                Enemy("Скелет", 35, 50, 15, 25, 1, 150),
+                Enemy("Зомби", 20, 80, 20, 10, 2, 250),
+                Enemy("Гоблин", 60, 45, 18, 50, 3, 350),
+                Enemy("Волк", 80, 40, 25, 70, 4, 450),
+                Enemy("Орк", 45, 100, 35, 30, 5, 600),
+                Enemy("Огненный элементаль", 70, 90, 40, 45, 6, 750),
+                Enemy("Ледяной маг", 50, 80, 35, 60, 7, 850),
+                Enemy("Земляной голем", 30, 180, 45, 20, 8, 1000),
+                Enemy("Всадник бури", 90, 85, 38, 85, 9, 1100),
+                Enemy("Темный рыцарь", 60, 140, 55, 50, 10, 1300),
+                Enemy("Вампир-лорд", 85, 130, 50, 80, 11, 1500),
+                Enemy("Гидра", 40, 250, 60, 35, 12, 1800),
+                Enemy("Пожиратель разума", 75, 250, 55, 90, 13, 2500),
+                Enemy("Дракон", 95, 350, 80, 70, 14, 3500),
+                Enemy("Повелитель хаоса", 300, 400, 105, 140, 15, 4000)
+            ]
+            enemy2 = []
+            level_enemy = max(1, player_level + random.randint(-3, 3))
+            for enemy1 in enemy:
+                if level_enemy == enemy1.level:
+                    enemy2.append(enemy1)
+            return random.choice(enemy2)
+        except NameError as e:
+            print(f"Ошибка {e}")
 
 
 def Die_Player(player):
-    if player.health == 0:
-        print("Вы проиграли эту смертоносную битву ")
-        return True
+    try:
+        if player.health == 0:
+            print("Вы проиграли эту смертоносную битву ")
+            return True
+    except ValueError as e:
+        print(e)
 
 
 def Die_Enemy(enemy, player):
-    global shetovod
-    if enemy.health <= 0:
-        print("Вы выиграли эту смертоносную битву ")
-        if player.buff_dex > 0:
-            player.buff_dex -= 1
-        elif player.buff_strong > 0:
-            player.buff_strong -= 1
-        if enemy.name in ["Повелитель хаоса", "Дракон", "Пожиратель разума"]:
-            shetovod += 1
-        return True
+    try:
+        global shetovod
+        if enemy.health <= 0:
+            print("Вы выиграли эту смертоносную битву ")
+            if player.buff_dex > 0:
+                player.buff_dex -= 1
+            elif player.buff_strong > 0:
+                player.buff_strong -= 1
+            if enemy.name in ["Повелитель хаоса", "Дракон", "Пожиратель разума"]:
+                shetovod += 1
+            return True
+    except NameError as e:
+        print(e)
 
 
 def Attack(player, enemy):
     global shetovod
-
     print(F"Вы встретили {enemy.name} , у него такое хп {enemy.health}")
     print(f"Нажмите 1 ,чтобы начать битву , нажмите 2 чтобы ее избежать ")
-    choice1 = input("Введите дейстие :)  :(  ")
+    try:
+        choice1 = input("Введите дейстие :)  :(  ")
+    except ValueError:
+        print("Вы можете вводить только числа")
     while player.health > 0 and enemy.health > 0:
         if choice1 == "1":
-            attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+            try:
+                attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+            except ValueError:
+                print("Вы можете вводить только числа")
             if attack == "1":
                 player.health -= enemy.strong
                 enemy.health -= player.strong
@@ -403,7 +421,10 @@ def Attack(player, enemy):
         elif choice1 == "2":
             if enemy.speed > player.speed:
                 print("Вам не удалось сбежать xD")
-                attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+                try:
+                    attack = input("Нажмите '1' ,чтобы ударить или '2' ,чтобы увернутся ")
+                except ValueError:
+                    print("Вы можете вводить только числа")
                 if attack == "1":
                     player.health -= enemy.strong
                     enemy.health -= player.strong
@@ -462,14 +483,14 @@ def Attack(player, enemy):
 
 
 def poisk(player):
-    poisk_list = ["empty", "enemy", "chest", "village", "hilling"]
+    poisk_list = "enemy" #["empty", "enemy", "chest", "village", "hilling"]
     event = random.choice(poisk_list)
     print("Исследование Территорие...")
     time.sleep(2)
     if event == "empty":
         print("Вы ничего не нашли , попробуйте еще раз.")
     elif event == "enemy":
-        randen = Enemy.poisk_enemy(player.level)
+        randen = Enemy.poisk_enemy(player_level = player.level)
         Attack(player, randen)
     elif event == "chest":
         Item.open_chest(player)
@@ -486,6 +507,8 @@ def poisk(player):
         print("Вы встретили , лечебное озеро!")
         hill1 = random.randint(10, 30)
         player.health = min(player.maxhealth, player.health + hill1)
+        if player.health >= player.maxhealth:
+            player.health = player.maxhealth
         print(f"У вас добавилось {hill1} хп , и теперь у вас {player.health} хп")
 
 
@@ -567,7 +590,11 @@ def Brodilka():
         print("Нажмите '3' , чтобы 'посмотреть характеристики' .")
         print("Нажмите '4' , чтобы 'улучшить характеристики' .")
         print("Нажмите '5' , чтобы 'выйти из игры!' .")
-        var1 = int(input("Введите число "))
+        try:
+            var1 = int(input("Введите число "))
+        except ValueError:
+            print("Вы можете вводить только числа")
+            continue
         if var1 == 1:
             poisk(player)
         elif var1 == 2:
